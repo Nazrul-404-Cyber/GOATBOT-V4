@@ -19,8 +19,8 @@
     ]
   },
   "adminBot": [
-    "1131310824856530",
-    "1131310824856530"
+    "61553151694837",
+    "61553151694837"
     
   ],
   "whiteListMode": {
@@ -29,7 +29,7 @@
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
   "nickNameBot": "SOJIB-BOT",
-  "prefix": "+",
+  "prefix": "/",
   "database": {
     "type": "sqlite",
     "uriMongodb": "",
