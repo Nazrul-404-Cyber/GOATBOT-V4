@@ -1,409 +1,72 @@
-const fs = require("fs-extra");
-const axios = require("axios");
-const path = require("path");
-const { getPrefix } = global.utils;
-const { commands, aliases } = global.GoatBot;
-const doNotDelete = "[ 🐐 | Goat Bot V2 ]";
-/**
-* @author NTKhang
-* @author: do not delete it
-* @message if you delete or edit it you will get a global ban
-*/
 
 module.exports = {
-	config: {
-		name: "help7",
-		version: "1.21",
-		author: "NTKhang",
-		countDown: 5,
-		role: 0,
-		description: {
-			vi: "Xem cách sử dụng của các lệnh",
-			en: "View command usage"
-		},
-		category: "info",
-		guide: {
-			vi: "   {pn} [để trống | <số trang> | <tên lệnh>]"
-				+ "\n   {pn} <command name> [-u | usage | -g | guide]: chỉ hiển thị phần hướng dẫn sử dụng lệnh"
-				+ "\n   {pn} <command name> [-i | info]: chỉ hiển thị phần thông tin về lệnh"
-				+ "\n   {pn} <command name> [-r | role]: chỉ hiển thị phần quyền hạn của lệnh"
-				+ "\n   {pn} <command name> [-a | alias]: chỉ hiển thị phần tên viết tắt của lệnh",
-			en: "{pn} [empty | <page number> | <command name>]"
-				+ "\n   {pn} <command name> [-u | usage | -g | guide]: only show command usage"
-				+ "\n   {pn} <command name> [-i | info]: only show command info"
-				+ "\n   {pn} <command name> [-r | role]: only show command role"
-				+ "\n   {pn} <command name> [-a | alias]: only show command alias"
-		},
-		priority: 1
-	},
+config: {
+name: "help",
+aliases: [`h`],
+version: "1.0",
+author: "Aryan Chauhan 🍒",
+countDown: 0,
+category: "config",
+role: 0,
+shortDescription: {
+en: "View bot usage guide",
+},
+},
 
-	langs: {
-		vi: {
-			help: "╭─────────────⭓"
-				+ "\n%1"
-				+ "\n├─────⭔"
-				+ "\n│ Trang [ %2/%3 ]"
-				+ "\n│ Hiện tại bot có %4 lệnh có thể sử dụng"
-				+ "\n│ » Gõ %5help <số trang> để xem danh sách các lệnh"
-				+ "\n│ » Gõ %5help để xem chi tiết cách sử dụng lệnh đó"
-				+ "\n├────────⭔"
-				+ "\n│ %6"
-				+ "\n╰─────────────⭓",
-			help2: "%1├───────⭔"
-				+ "\n│ » Hiện tại bot có %2 lệnh có thể sử dụng"
-				+ "\n│ » Gõ %3help <tên lệnh> để xem chi tiết cách sử dụng lệnh đó"
-				+ "\n│ %4"
-				+ "\n╰─────────────⭓",
-			commandNotFound: "Lệnh \"%1\" không tồn tại",
-			getInfoCommand: "╭── NAME ────⭓"
-				+ "\n│ %1"
-				+ "\n├── INFO"
-				+ "\n│ Mô tả: %2"
-				+ "\n│ Các tên gọi khác: %3"
-				+ "\n│ Các tên gọi khác trong nhóm bạn: %4"
-				+ "\n│ Version: %5"
-				+ "\n│ Role: %6"
-				+ "\n│ Thời gian mỗi lần dùng lệnh: %7s"
-				+ "\n│ Author: %8"
-				+ "\n├── USAGE"
-				+ "\n│%9"
-				+ "\n├── NOTES"
-				+ "\n│ Nội dung bên trong <XXXXX> là có thể thay đổi"
-				+ "\n│ Nội dung bên trong [a|b|c] là a hoặc b hoặc c"
-				+ "\n╰──────⭔",
-			onlyInfo: "╭── INFO ────⭓"
-				+ "\n│ Tên lệnh: %1"
-				+ "\n│ Mô tả: %2"
-				+ "\n│ Các tên gọi khác: %3"
-				+ "\n│ Các tên gọi khác trong nhóm bạn: %4"
-				+ "\n│ Version: %5"
-				+ "\n│ Role: %6"
-				+ "\n│ Thời gian mỗi lần dùng lệnh: %7s"
-				+ "\n│ Author: %8"
-				+ "\n╰─────────────⭓",
-			onlyUsage: "╭── USAGE ────⭓"
-				+ "\n│%1"
-				+ "\n╰─────────────⭓",
-			onlyAlias: "╭── ALIAS ────⭓"
-				+ "\n│ Các tên gọi khác: %1"
-				+ "\n│ Các tên gọi khác trong nhóm bạn: %2"
-				+ "\n╰─────────────⭓",
-			onlyRole: "╭── ROLE ────⭓"
-				+ "\n│%1"
-				+ "\n╰─────────────⭓",
-			doNotHave: "Không có",
-			roleText0: "0 (Tất cả người dùng)",
-			roleText1: "1 (Quản trị viên nhóm)",
-			roleText2: "2 (Admin bot)",
-			roleText0setRole: "0 (set role, tất cả người dùng)",
-			roleText1setRole: "1 (set role, quản trị viên nhóm)",
-			pageNotFound: "Trang %1 không tồn tại"
-		},
-		en: {
-			help: "╭─────────────⭓"
-				+ "\n%1"
-				+ "\n├─────⭔"
-				+ "\n│ Page [ %2/%3 ]"
-				+ "\n│ Currently, the bot has %4 commands that can be used"
-				+ "\n│ » Type %5help <page> to view the command list"
-				+ "\n│ » Type %5help to view the details of how to use that command"
-				+ "\n├────────⭔"
-				+ "\n│ %6"
-				+ "\n╰─────────────⭓",
-			help2: "%1├───────⭔"
-				+ "\n│ » Currently, the bot has %2 commands that can be used"
-				+ "\n│ » Type %3help <command name> to view the details of how to use that command"
-				+ "\n│ %4"
-				+ "\n╰─────────────⭓",
-			commandNotFound: "Command \"%1\" does not exist",
-			getInfoCommand: "╭── NAME ────⭓"
-				+ "\n│ %1"
-				+ "\n├── INFO"
-				+ "\n│ Description: %2"
-				+ "\n│ Other names: %3"
-				+ "\n│ Other names in your group: %4"
-				+ "\n│ Version: %5"
-				+ "\n│ Role: %6"
-				+ "\n│ Time per command: %7s"
-				+ "\n│ Author: %8"
-				+ "\n├── USAGE"
-				+ "\n│%9"
-				+ "\n├── NOTES"
-				+ "\n│ The content inside <XXXXX> can be changed"
-				+ "\n│ The content inside [a|b|c] is a or b or c"
-				+ "\n╰──────⭔",
-			onlyInfo: "╭── INFO ────⭓"
-				+ "\n│ Command name: %1"
-				+ "\n│ Description: %2"
-				+ "\n│ Other names: %3"
-				+ "\n│ Other names in your group: %4"
-				+ "\n│ Version: %5"
-				+ "\n│ Role: %6"
-				+ "\n│ Time per command: %7s"
-				+ "\n│ Author: %8"
-				+ "\n╰─────────────⭓",
-			onlyUsage: "╭── USAGE ────⭓"
-				+ "\n│%1"
-				+ "\n╰─────────────⭓",
-			onlyAlias: "╭── ALIAS ────⭓"
-				+ "\n│ Other names: %1"
-				+ "\n│ Other names in your group: %2"
-				+ "\n╰─────────────⭓",
-			onlyRole: "╭── ROLE ────⭓"
-				+ "\n│%1"
-				+ "\n╰─────────────⭓",
-			doNotHave: "Do not have",
-			roleText0: "0 (All users)",
-			roleText1: "1 (Group administrators)",
-			roleText2: "2 (Admin bot)",
-			roleText0setRole: "0 (set role, all users)",
-			roleText1setRole: "1 (set role, group administrators)",
-			pageNotFound: "Page %1 does not exist"
-		}
-	},
+langs: {
+en: {
+helpMessage: "╭───⭔『 𝗔𝗜 』\n│⭔ai ⭔goatmart\n│⭔gpt ⭔gpt4\n│⭔ai ⭔chi\n│⭔genimg\n│⭔chesca\n│⭔nemo ⭔bard \n│⭔bot\n╰───────────⭔\n╭─⭔『 𝗕𝗢𝗫 𝗖𝗛𝗔𝗧 』\n│⭔adduser ⭔all\n│⭔onlyadminbox \n│⭔admin ⭔anon}n│antichangeinfobox\n│⭔art ⭔ban\n│⭔badwords ⭔busy\n│⭔autosetname\n│⭔gay ⭔filteruser\n│⭔count ⭔gpt\n│⭔kick ⭔pm\n│⭔rbg ⭔refresh\n│⭔rules ⭔sammy\n│⭔sendnoti ⭔unsend\n│⭔warn ⭔callad│⭔antichangeinfobox\n╰───────────⭔\n╭───⭔\n『 𝗔𝗡𝗜𝗠𝗘 𝗖𝗠𝗗 』\n│⭔waifu ⭔manga\n│⭔character ⭔advice\n│⭔quote2 ⭔anime2\n│⭔anime3 ⭔cat\n│⭔animeinfo ⭔milf\n│⭔malnews\n│⭔animevid ⭔avoid\n╰───────────⭔\n╭─⭔『 𝗕𝗔𝗡𝗞𝗜𝗡𝗚 』\n│⭔balance ⭔bank\n│⭔set \n╰───────────⭔\n╭──⭔『 𝗖𝗨𝗦𝗧𝗢𝗠 』\n│⭔setleave \n│⭔setwelcome\n│⭔shortcut\n│⭔customrankcard\n╰───────────⭔\n╭───⭔『 𝗦𝗜𝗠𝗜𝗦𝗜𝗠𝗜 』\n│⭔sim ⭔teach \n│⭔sim2 ⭔teach2\n╰───────────⭔\n╭───⭔\n『 𝗡𝗦𝗙𝗪 』\n│⭔shoti ⭔hentaivid3\n│⭔hentaivid2 \n│⭔hentaivid ⭔NSFW\n│⭔hentai2\n╰───────────⭔\n╭───⭔『 𝗥𝗘𝗤𝗨𝗘𝗦𝗧 𝗠𝗔𝗜𝗡 』\n│⭔requestmain\n│⭔requestnsfwn│⭔requestMAIN\n│⭔requestNSFW\n│⭔accept\n╰───────────⭔\n╭───⭔『 𝗚𝗔𝗠𝗘𝗦 』\n│⭔truthordare\n│⭔game ⭔steal\n│⭔sicbo ⭔codm \n│⭔country ⭔daily  \n│⭔dhbc ⭔slot\n│⭔guessnumber\n│⭔tictactoe ⭔quiz \n╰───────────⭔\n╭───⭔『 𝗢𝗪𝗡𝗘𝗥 𝗖𝗠𝗗𝗦 』 \n│⭔main ⭔restart\n│⭔leave ⭔files\n│⭔join ⭔system\n│⭔resetmoney ⭔eval \n│⭔bio ⭔backupdata\n│⭔cmd ⭔approved\n│⭔adminonly ⭔event  \n│⭔getfbstate ⭔delete\n│⭔ignoreonlyad\n│⭔ignoreonlyadbox\n│⭔jsontosqlite\n│⭔jsontomongodb\n│⭔leaveall ⭔listbox\n│⭔bannelist ⭔notice\n│⭔loadconfig ⭔out \n│⭔offbot ⭔maintain \n│⭔setavt ⭔setlang \n│⭔setrankup ⭔user\n│⭔thread ⭔update\n╰───────────⭔\n╭──⭔『 𝗦𝗘𝗔𝗥𝗖𝗛 𝗜𝗠𝗚 』\n│⭔qr ⭔pinterest \n│⭔qrcode ⭔affect\n│⭔removebg ⭔bed\n│⭔arrest ⭔avatar\n│avatar2 ⭔banner2\n│⭔batslap ⭔blink\n│⭔cdp ⭔cdp3\n│⭔cdp4 ⭔chad\n│⭔cover ⭔cover1\n│⭔cover2 ⭔fbcover\n│⭔kiss ⭔moon\n│⭔imagine ⭔gfx\n│⭔banner ⭔banner3\n│⭔confess ⭔img\n│⭔img2 ⭔gfx2\n│⭔gfx3 ⭔gfx4\n│⭔gfx5 ⭔mpanel\n│⭔nepal ⭔profile\n│⭔pti ⭔remini\n│⭔sadcat ⭔sorthelp\n│⭔trash ⭔trigger\n│⭔wanted ⭔ws\n╰───────────⭔\n╭───⭔『 𝗙𝗨𝗡&𝗟𝗢𝗩𝗘』\n│⭔marry ⭔war\n│⭔marry2 ⭔married\n│⭔fuck2 ⭔us\n│⭔ship ⭔pair\n│⭔pair2 ⭔pairv3\n│⭔cdp2 ⭔anya\n│⭔kiss2 ⭔kreysh2\n│⭔kreysh3 ⭔aniblur\n│⭔animeme ⭔ball\n│⭔beauty ⭔Biden\n│⭔cardinfo ⭔clown\n│⭔cardinfo2 ⭔dog\n│⭔elon ⭔condom\n│⭔cosplay ⭔fact1\n│⭔cumshot ⭔flirt\n│⭔emojimix ⭔fuck3\n│⭔fingering ⭔gname\n│⭔jail ⭔joke\n│⭔love ⭔lyricscard\n│⭔mark ⭔mia\n│⭔mlbbstalk\n│⭔motivation\n│⭔motivation2\b│⭔pair ⭔pair4\n│⭔obama ⭔post\n│pickuplines ⭔rps\b│⭔pubg ⭔propose\n│⭔pronbuh ⭔sed\n│⭔spam ⭔toilet\n│⭔taylorquote ⭔ugly\n│⭔trump\n│⭔unforgivable\n│⭔wholesome\n│⭔wishcard\n╰───────────⭔\n╭───⭔『 𝗥𝗘𝗣𝗟𝗬 𝗠𝗦𝗚𝗦 』\n│⭔hi ⭔haha\n│⭔autoreact ⭔ganda\n│⭔adminme ⭔owner\n│⭔pogi ⭔sheesh\n╰───────────⭔\n╭───⭔\n╭───⭔『 𝗖𝗢𝗡𝗙𝗜𝗚 』\n│⭔setalias ⭔prefix\n│⭔help ⭔resend\n│⭔restart\n╰───────────⭔\n╭───⭔『 𝗨𝗧𝗜𝗟𝗜𝗧𝗬 』\n│⭔loidtut ⭔weather\n│⭔war ⭔respect \n│⭔offer ⭔movie\n│⭔math ⭔hello\n│⭔td ⭔hell\n│⭔fbhack ⭔emojimix\n│⭔emojimean\n│⭔emojimix\n│⭔datetime ⭔catsay\n│⭔callad ⭔uptime\n│⭔blackpanter\n│⭔willsmith ⭔bday\n╰───────────⭔\n╭───⭔『 𝗦𝗧𝗨𝗗𝗬 』 \n│⭔element ⭔fact\n│⭔binary ⭔quote\n│⭔itunes\n│⭔fixgrammar\n│⭔dictionary\n╰───────────⭔\n╭───⭔『 𝗧𝗘𝗫𝗧 𝗠𝗦𝗚 』\n│⭔blood ⭔circuit\n│⭔matrix ⭔space\n│⭔thunder ⭔bigtxt\n│⭔botsay ⭔font\n╰───────────⭔\n╭───⭔『 ➊➑+ 』\n│⭔blowjob ⭔fuck4\n│⭔fingering2 ⭔fuck\n│⭔nude ⭔pussy\n│⭔pantieclose\n│⭔squeeze\n╰───────────⭔\n╭─⭔『 𝗡𝗢 𝗣𝗥𝗘𝗙𝗜𝗫 』\n│⭔get ⭔audio\n│⭔beluga ⭔omg\n│⭔fuck you ⭔natruto\n│⭔women ⭔yukhiira\n╰───────────⭔\n╭──⭔『 𝗠𝗨𝗦𝗜𝗖 』\n│⭔animevid ⭔music\n│⭔aniefitb ⭔lv\n│⭔play ⭔ytb\n│⭔youtube ⭔sing2\n│⭔music ⭔sing\n╰───────────⭔\n╭──⭔『 𝗡𝗘𝗪 𝗖𝗠𝗗 』\n│⭔noti ⭔pin\n│⭔richest ⭔font\n│⭔lyrics ⭔music\n│⭔file ⭔set\n│⭔bank ⭔groupinfo\n│⭔callad ⭔imagine\n│⭔music  ⭔imgur\n│⭔tempmail ⭔autofb\n│⭔autoinsta  ⭔autotik\n│⭔bday ⭔autoseen\n│⭔findgay ⭔clean\n│⭔youtube ⭔aniedit \n│⭔randomtik ⭔music\n│⭔codm ⭔genimg\n│⭔owner  ⭔impress\n│⭔aniquote ⭔ac\n│⭔listbox ⭔video\n│⭔leave ⭔animemem\n│⭔calculate ⭔ws\n│⭔search ⭔memstole\n│⭔sdxl ⭔prodia\n│⭔write ⭔ttt\n│⭔pexels ⭔time\n│⭔clear ⭔ytb\n╰───────────⭔\n╭──⭔『 𝗘𝗗𝗜𝗧𝗢𝗥 』\n│⭔4k ⭔removebg\n╰───────────⭔╭───⭔『 𝗠𝗘𝗗𝗜𝗔 』\n│⭔autofb ⭔advice\n│⭔autotik ⭔fb\n│⭔⭔autoinsta ⭔ytb\n│⭔videofb ⭔stalk\n│⭔sing3 ⭔tik\n│⭔sing ⭔getlink\n│⭔hitler ⭔insta\n│⭔girl ⭔download\n│⭔autolink\n╰───────────⭔\n╭───⭔『 𝗪𝗥𝗜𝗧𝗘 』\n│⭔pending ⭔war\n│⭔video ⭔siesta\n│⭔spiderman ⭔set\n│⭔memstole ⭔test\n│⭔⭔resend ⭔news\n│⭔⭔respect ⭔movie\!│⭔noprefixmsg\n│⭔math ⭔ping\n│⭔uptime ⭔ip\n│⭔top ⭔tid\n│⭔fbhack ⭔group\n│⭔emojimean\n│⭔emojimix ⭔us\n│⭔devicetop \n│⭔device ⭔datetime\n│⭔choose ⭔buttslap\n│⭔alert ⭔upscaleai\n│⭔ttt ⭔lyrics\n│⭔wanted ⭔sorthelp\n│⭔sdxl ⭔remini\n│⭔pastebin\n│⭔removebg\n╰───────────⭔\n╭───⭔『 𝗧𝗢𝗢𝗟𝗦 』\n│⭔fbshare ⭔fbhack\n│⭔fbaccount\n│⭔fbreport ⭔botstats\n│⭔imgbb\n╰───────────⭔\n╭─⭔『 𝗙𝗢𝗢𝗧𝗕𝗔𝗟𝗟 』\n│⭔messi ⭔neymar\n│⭔ramos ⭔ronaldo\n│⭔football\n╰───────────⭔\n\n📍 | 𝗣𝗮𝗴𝗲 𝟏:\n\n🛠𝗧𝗼𝘁𝗹𝗲 𝗖𝗠𝗗𝗦:-【 350 】\n\n➤ Creator: \n【 CliffVincent 】",
+},
+},
 
-	onStart: async function ({ message, args, event, threadsData, getLang, role, globalData }) {
-		const langCode = await threadsData.get(event.threadID, "data.lang") || global.GoatBot.config.language;
-		let customLang = {};
-		const pathCustomLang = path.normalize(`${process.cwd()}/languages/cmds/${langCode}.js`);
-		if (fs.existsSync(pathCustomLang))
-			customLang = require(pathCustomLang);
+onStart: async function ({ message, event, getLang }) {
+const args = event.body.split(" ");
+let responseMessage = "";
 
-		const { threadID } = event;
-		const threadData = await threadsData.get(threadID);
-		const prefix = getPrefix(threadID);
-		let sortHelp = threadData.settings.sortHelp || "name";
-		if (!["category", "name"].includes(sortHelp))
-			sortHelp = "name";
-		const commandName = (args[0] || "").toLowerCase();
-		let command = commands.get(commandName) || commands.get(aliases.get(commandName));
-		const aliasesData = threadData.data.aliases || {
-			// uid: ["userid", "id"]
-		};
-		if (!command) {
-			for (const cmdName in aliasesData) {
-				if (aliasesData[cmdName].includes(commandName)) {
-					command = commands.get(cmdName);
-					break;
-				}
-			}
-		}
+if (args.length === 1) {
+// Handle "help" command
+responseMessage = getLang("helpMessage");
+} else {
+// Handle other cases (e.g., "help commandName")
+// You can add custom logic here to provide instructions for specific commands.
+responseMessage = "Error.";
+}
 
-		if (!command) {
-			const globalAliasesData = await globalData.get('setalias', 'data', []);
-			// [{
-			// 	commandName: "uid",
-			// 	aliases: ["uid", "id]
-			// }]
-			for (const item of globalAliasesData) {
-				if (item.aliases.includes(commandName)) {
-					command = commands.get(item.commandName);
-					break;
-				}
-			}
-		}
+message.reply(responseMessage);
+},
+};module.exports = {
+config: {
+name: "help6",
+aliases: [`h`],
+version: "1.0",
+author: "CliffVincent 🍒",
+countDown: 0,
+category: "config",
+role: 0,
+shortDescription: {
+en: "View bot usage guide",
+},
+},
 
-		// ———————————————— LIST ALL COMMAND ——————————————— //
-		if (!command && !args[0] || !isNaN(args[0])) {
-			const arrayInfo = [];
-			let msg = "";
-			if (sortHelp == "name") {
-				const page = parseInt(args[0]) || 1;
-				const numberOfOnePage = 30;
-				for (const [name, value] of commands) {
-					if (value.config.role > 1 && role < value.config.role)
-						continue;
-					let describe = name;
-					let description;
-					const descriptionCustomLang = customLang[name]?.description;
-					if (descriptionCustomLang != undefined)
-						description = checkLangObject(descriptionCustomLang, langCode);
-					else if (value.config.description)
-						description = checkLangObject(value.config.description, langCode);
-					if (description)
-						describe += `: ${cropContent(description.charAt(0).toUpperCase() + description.slice(1), 50)}`;
-					arrayInfo.push({
-						data: describe,
-						priority: value.priority || 0
-					});
-				}
+langs: {
+en: {
+helpMessage: "❀━━━━━━━━━━━━❀\n         COMMANDS\n❀━━━━━━━━━━━❀\n\n╭───❍『 𝗔𝗜 』\n│⭔ai ⭔goatmart\n│⭔gpt ⭔gpt4\n│⭔ai ⭔chi\n│⭔genimg\n│⭔hima\n│⭔nemo ⭔bard \n│⭔bot\n╰───────────⟡\n╭─❍『 𝗕𝗢𝗫 𝗖𝗛𝗔𝗧 』\n│⭔adduser ⭔all\n│⭔onlyadminbox \n│⭔admin ⭔anon\n│⭔antichangeinfobox\n│⭔art ⭔ban\n│⭔badwords ⭔busy\n│⭔autosetname\n│⭔gay ⭔filteruser\n│⭔count ⭔gpt\n│⭔kick ⭔pm\n│⭔rbg ⭔refresh\n│⭔rules ⭔sammy\n│⭔sendnoti ⭔unsend\n│⭔warn ⭔callad\n╰───────────⟡\n╭───❍『 𝗔𝗡𝗜𝗠𝗘 𝗖𝗠𝗗 』\n│⭔waifu ⭔manga\n│⭔character ⭔advice\n│⭔quote2 ⭔anime2\n│⭔anime3 ⭔cat\n│⭔animeinfo ⭔milf\n│⭔malnews\n│⭔animevid ⭔avoid\n╰───────────⟡\n╭─❍『 𝗕𝗔𝗡𝗞𝗜𝗡𝗚 』\n│⭔balance ⭔bank\n│⭔set \n╰───────────⟡\n╭──❍『 𝗖𝗨𝗦𝗧𝗢𝗠 』\n│⭔setleave \n│⭔setwelcome\n│⭔shortcut\n│⭔customrankcard\n╰───────────⟡\n╭───❍『 𝗦𝗜𝗠𝗜𝗦𝗜𝗠𝗜 』\n│⭔sim ⭔teach \n│⭔sim2 ⭔teach2\n╰───────────⟡\n╭───❍『 𝗡𝗦𝗙𝗪 』\n│⭔shoti ⭔hentaivid3\n│⭔hentaivid2 \n│⭔hentaivid ⭔NSFW\n│⭔hentai2\n╰───────────⟡\n╭───❍『 𝗥𝗘𝗤𝗨𝗘𝗦𝗧 𝗠𝗔𝗜𝗡 』\n│⭔requestmain\n│⭔requestnsfwn\n│⭔requestMAIN\n│⭔requestNSFW\n│⭔accept\n╰───────────⟡\n╭───❍『 𝗚𝗔𝗠𝗘𝗦 』\n│⭔truthordare\n│⭔game ⭔steal\n│⭔sicbo ⭔codm \n│⭔country ⭔daily  \n│⭔dhbc ⭔slot\n│⭔guessnumber\n│⭔tictactoe ⭔quiz \n╰───────────⟡\n╭───❍『 𝗢𝗪𝗡𝗘𝗥 𝗖𝗠𝗗𝗦 』 \n│⭔main ⭔restart\n│⭔leave ⭔files\n│⭔join ⭔system\n│⭔resetmoney ⭔eval \n│⭔bio ⭔backupdata\n│⭔cmd ⭔approved\n│⭔adminonly ⭔event  \n│⭔getfbstate ⭔delete\n│⭔ignoreonlyad\n│⭔ignoreonlyadbox\n│⭔jsontosqlite\n│⭔jsontomongodb\n│⭔leaveall ⭔listbox\n│⭔bannelist ⭔notice\n│⭔loadconfig ⭔out \n│⭔offbot ⭔maintain \n│⭔setavt ⭔setlang \n│⭔setrankup ⭔user\n│⭔thread ⭔update\n╰───────────⟡\n╭──❍『 𝗦𝗘𝗔𝗥𝗖𝗛 𝗜𝗠𝗚 』\n│⭔qr ⭔pinterest \n│⭔qrcode ⭔affect\n│⭔removebg ⭔bed\n│⭔arrest ⭔avatar\n│avatar2 ⭔banner2\n│⭔batslap ⭔blink\n│⭔cdp ⭔cdp3\n│⭔cdp4 ⭔chad\n│⭔cover ⭔cover1\n│⭔cover2 ⭔fbcover\n│⭔kiss ⭔moon\n│⭔imagine ⭔gfx\n│⭔banner ⭔banner3\n│⭔confess ⭔img\n│⭔img2 ⭔gfx2\n│⭔gfx3 ⭔gfx4\n│⭔gfx5 ⭔mpanel\n│⭔nepal ⭔profile\n│⭔pti ⭔remini\n│⭔sadcat ⭔sorthelp\n│⭔trash ⭔trigger\n│⭔wanted ⭔ws\n╰───────────⟡\n╭───❍『 𝗙𝗨𝗡&𝗟𝗢𝗩𝗘』\n│⭔marry ⭔war\n│⭔marry2 ⭔married\n│⭔fuck2 ⭔us\n│⭔ship ⭔pair\n│⭔pair2 ⭔pairv3\n│⭔cdp2 ⭔anya\n│⭔kiss2 ⭔kreysh2\n│⭔kreysh3 ⭔aniblur\n│⭔animeme ⭔ball\n│⭔beauty ⭔Biden\n│⭔cardinfo ⭔clown\n│⭔cardinfo2 ⭔dog\n│⭔elon ⭔condom\n│⭔cosplay ⭔fact1\n│⭔cumshot ⭔flirt\n│⭔emojimix ⭔fuck3\n│⭔fingering ⭔gname\n│⭔jail ⭔joke\n│⭔love ⭔lyricscard\n│⭔mark ⭔mia\n│⭔mlbbstalk\n│⭔motivation\n│⭔motivation2\n│⭔pair\n│⭔pair4\n│⭔obama ⭔post\n│pickuplines ⭔rps\n│⭔pubg \n│⭔propose\n│⭔pronbuh ⭔sed\n│⭔spam ⭔toilet\n│⭔taylorquote ⭔ugly\n│⭔trump\n│⭔unforgivable\n│⭔wholesome\n│⭔wishcard\n╰───────────⟡\n╭───❍『 𝗥𝗘𝗣𝗟𝗬 𝗠𝗦𝗚𝗦 』\n│⭔hi ⭔haha\n│⭔autoreact ⭔ganda\n│⭔adminme ⭔owner\n│⭔pogi ⭔sheesh\n╰───────────⟡\n╭───❍『 𝗖𝗢𝗡𝗙𝗜𝗚 』\n│⭔setalias ⭔prefix\n│⭔help ⭔resend\n│⭔restart\n╰───────────⟡\n╭───❍『 𝗨𝗧𝗜𝗟𝗜𝗧𝗬 』\n│⭔loidtut ⭔weather\n│⭔war ⭔respect \n│⭔offer ⭔movie\n│⭔math ⭔hello\n│⭔td ⭔hell\n│⭔fbhack ⭔emojimix\n│⭔emojimean\n│⭔emojimix\n│⭔datetime ⭔catsay\n│⭔callad ⭔uptime\n│⭔blackpanter\n│⭔willsmith ⭔bday\n╰───────────⟡\n╭───❍『 𝗦𝗧𝗨𝗗𝗬 』 \n│⭔element ⭔fact\n│⭔binary ⭔quote\n│⭔itunes\n│⭔fixgrammar\n│⭔dictionary\n╰───────────⟡\n╭───❍『 𝗧𝗘𝗫𝗧 𝗠𝗦𝗚 』\n│⭔blood ⭔circuit\n│⭔matrix ⭔space\n│⭔thunder ⭔bigtxt\n│⭔botsay ⭔font\n╰───────────⟡\n╭───❍『 ➊➑+ 』\n│⭔blowjob ⭔fuck4\n│⭔fingering2 ⭔fuck\n│⭔nude ⭔pussy\n│⭔pantieclose\n│⭔squeeze\n╰───────────⭔\n╭─❍『 𝗡𝗢 𝗣𝗥𝗘𝗙𝗜𝗫 』\n│⭔get ⭔audio\n│⭔beluga ⭔omg\n│⭔fuck you ⭔natruto\n│⭔women ⭔yukhiira\n╰───────────⟡\n╭──❍『 𝗠𝗨𝗦𝗜𝗖 』\n│⭔animevid ⭔music\n│⭔aniefitb ⭔lv\n│⭔play ⭔ytb\n│⭔youtube ⭔sing2\n│⭔music ⭔sing\n╰───────────⟡\n╭──❍『 𝗡𝗘𝗪 𝗖𝗠𝗗 』\n│⭔noti ⭔pin\n│⭔richest ⭔font\n│⭔lyrics ⭔music\n│⭔file ⭔set\n│⭔bank ⭔groupinfo\n│⭔callad ⭔imagine\n│⭔music  ⭔imgur\n│⭔tempmail ⭔autofb\n│⭔autoinsta  ⭔autotik\n│⭔bday ⭔autoseen\n│⭔findgay ⭔clean\n│⭔youtube ⭔aniedit \n│⭔randomtik ⭔music\n│⭔codm ⭔genimg\n│⭔owner  ⭔impress\n│⭔aniquote ⭔ac\n│⭔listbox ⭔video\n│⭔leave ⭔animemem\n│⭔calculate ⭔ws\n│⭔search ⭔memstole\n│⭔sdxl ⭔prodia\n│⭔write ⭔ttt\n│⭔pexels ⭔time\n│⭔clear ⭔ytb\n╰───────────⟡\n╭──❍『 𝗘𝗗𝗜𝗧𝗢𝗥 』\n│⭔4k ⭔removebg\n│⭔remini\n╰───────────⟡\n╭───❍『 𝗠𝗘𝗗𝗜𝗔 』\n│⭔autofb ⭔advice\n│⭔autotik ⭔fb\n│⭔⭔autoinsta ⭔ytb\n│⭔videofb ⭔stalk\n│⭔sing3 ⭔tik\n│⭔sing ⭔getlink\n│⭔hitler ⭔insta\n│⭔girl ⭔download\n│⭔autolink\n╰───────────⟡\n╭───❍『 𝗪𝗥𝗜𝗧𝗘 』\n│⭔pending ⭔war\n│⭔video ⭔siesta\n│⭔spiderman ⭔set\n│⭔memstole ⭔test\n│⭔⭔resend ⭔news\n│⭔⭔respect ⭔movie\n│⭔noprefixmsg\n│⭔math ⭔ping\n│⭔uptime ⭔ip\n│⭔top ⭔tid\n│⭔fbhack ⭔group\n│⭔emojimean\n│⭔emojimix ⭔us\n│⭔devicetop \n│⭔device ⭔datetime\n│⭔choose ⭔buttslap\n│⭔alert ⭔upscaleai\n│⭔ttt ⭔lyrics\n│⭔wanted ⭔sorthelp\n│⭔sdxl ⭔remini\n│⭔pastebin\n│⭔removebg\n╰───────────⟡\n╭───❍『 𝗧𝗢𝗢𝗟𝗦 』\n│⭔fbshare ⭔fbhack\n│⭔fbaccount\n│⭔fbreport ⭔botstats\n│⭔imgbb\n╰───────────⟡\n╭─❍『 𝗙𝗢𝗢𝗧𝗕𝗔𝗟𝗟 』\n│⭔messi ⭔neymar\n│⭔ramos ⭔ronaldo\n│⭔football\n╰───────────⟡\n├─────☾⋆\n│ » Total commands: [ 504 ]\n│「 POGI PA KISS PWEDE?」\n╰──────────⧕\n\n𝗥𝗔𝗡𝗗𝗢𝗠 𝗙𝗔𝗖𝗧: The smell of freshly-cut grass is actually a plant distress call.",
+},
+},
 
-				arrayInfo.sort((a, b) => a.data - b.data); // sort by name
-				arrayInfo.sort((a, b) => a.priority > b.priority ? -1 : 1); // sort by priority
-				const { allPage, totalPage } = global.utils.splitPage(arrayInfo, numberOfOnePage);
-				if (page < 1 || page > totalPage)
-					return message.reply(getLang("pageNotFound", page));
+onStart: async function ({ message, event, getLang }) {
+const args = event.body.split(" ");
+let responseMessage = "";
 
-				const returnArray = allPage[page - 1] || [];
-				const startNumber = (page - 1) * numberOfOnePage + 1;
-				msg += (returnArray || []).reduce((text, item, index) => text += `│ ${index + startNumber}${index + startNumber < 10 ? " " : ""}. ${item.data}\n`, '').slice(0, -1);
-				await message.reply(getLang("help", msg, page, totalPage, commands.size, prefix, doNotDelete));
-			}
-			else if (sortHelp == "category") {
-				for (const [, value] of commands) {
-					if (value.config.role > 1 && role < value.config.role)
-						continue; // if role of command > role of user => skip
-					const indexCategory = arrayInfo.findIndex(item => (item.category || "NO CATEGORY") == (value.config.category?.toLowerCase() || "NO CATEGORY"));
+if (args.length === 1) {
+// Handle "help" commad
+responseMessage = getLang("helpMessage");
+} else {
+// Handle other cases (e.g., "help commandName")
+// You can add custom logic here to provide instructions for specific commands.
+responseMessage = "┏━𝗡𝗔𝗠𝗘 ━━━━━━⦿\n┣━No-Name\n┣━ 𝗜𝗡𝗙𝗢\n┃\n┣━𝗗𝗘𝗦𝗖𝗥𝗜𝗣𝗧𝗜𝗢�\n┃View command usage and list all commands irectly\n┣━━𝗖𝗠𝗗 𝗩𝗘𝗥𝗦𝗜𝗢𝗡 \n┃1.0\n┣━━𝗖𝗠𝗗 𝗥𝗢𝗟𝗘\n┃0 (All users)\n┣━━𝗨�𝗘 𝗧𝗜𝗠𝗘\n┃5s\n┣━━𝗔𝗨𝗧𝗛𝗢𝗥\n┃Cliff  🍒\n┣━━USAGE\n┃NOT AVAILABLE\n┗━━━━━━֎";
+}
 
-					if (indexCategory != -1)
-						arrayInfo[indexCategory].names.push(value.config.name);
-					else
-						arrayInfo.push({
-							category: value.config.category.toLowerCase(),
-							names: [value.config.name]
-						});
-				}
-				arrayInfo.sort((a, b) => (a.category < b.category ? -1 : 1));
-				arrayInfo.forEach((data, index) => {
-					const categoryUpcase = `${index == 0 ? `╭` : `├`}─── ${data.category.toUpperCase()} ${index == 0 ? "⭓" : "⭔"}`;
-					data.names = data.names.sort().map(item => item = `│ ${item}`);
-					msg += `${categoryUpcase}\n${data.names.join("\n")}\n`;
-				});
-				message.reply(getLang("help2", msg, commands.size, prefix, doNotDelete));
-			}
-		}
-		// ———————————— COMMAND DOES NOT EXIST ———————————— //
-		else if (!command && args[0]) {
-			return message.reply(getLang("commandNotFound", args[0]));
-		}
-		// ————————————————— INFO COMMAND ————————————————— //
-		else {
-			const formSendMessage = {};
-			const configCommand = command.config;
-
-			let guide = configCommand.guide?.[langCode] || configCommand.guide?.["en"];
-			if (guide == undefined)
-				guide = customLang[configCommand.name]?.guide?.[langCode] || customLang[configCommand.name]?.guide?.["en"];
-
-			guide = guide || {
-				body: ""
-			};
-			if (typeof guide == "string")
-				guide = { body: guide };
-			const guideBody = guide.body
-				.replace(/\{prefix\}|\{p\}/g, prefix)
-				.replace(/\{name\}|\{n\}/g, configCommand.name)
-				.replace(/\{pn\}/g, prefix + configCommand.name);
-
-			const aliasesString = configCommand.aliases ? configCommand.aliases.join(", ") : getLang("doNotHave");
-			const aliasesThisGroup = threadData.data.aliases ? (threadData.data.aliases[configCommand.name] || []).join(", ") : getLang("doNotHave");
-
-			let roleOfCommand = configCommand.role;
-			let roleIsSet = false;
-			if (threadData.data.setRole?.[configCommand.name]) {
-				roleOfCommand = threadData.data.setRole[configCommand.name];
-				roleIsSet = true;
-			}
-
-			const roleText = roleOfCommand == 0 ?
-				(roleIsSet ? getLang("roleText0setRole") : getLang("roleText0")) :
-				roleOfCommand == 1 ?
-					(roleIsSet ? getLang("roleText1setRole") : getLang("roleText1")) :
-					getLang("roleText2");
-
-			const author = configCommand.author;
-			const descriptionCustomLang = customLang[configCommand.name]?.description;
-			let description = checkLangObject(configCommand.description, langCode);
-			if (description == undefined)
-				if (descriptionCustomLang != undefined)
-					description = checkLangObject(descriptionCustomLang, langCode);
-				else
-					description = getLang("doNotHave");
-
-			let sendWithAttachment = false; // check subcommand need send with attachment or not
-
-			if (args[1]?.match(/^-g|guide|-u|usage$/)) {
-				formSendMessage.body = getLang("onlyUsage", guideBody.split("\n").join("\n│"));
-				sendWithAttachment = true;
-			}
-			else if (args[1]?.match(/^-a|alias|aliase|aliases$/))
-				formSendMessage.body = getLang("onlyAlias", aliasesString, aliasesThisGroup);
-			else if (args[1]?.match(/^-r|role$/))
-				formSendMessage.body = getLang("onlyRole", roleText);
-			else if (args[1]?.match(/^-i|info$/))
-				formSendMessage.body = getLang(
-					"onlyInfo",
-					configCommand.name,
-					description,
-					aliasesString,
-					aliasesThisGroup,
-					configCommand.version,
-					roleText,
-					configCommand.countDown || 1,
-					author || ""
-				);
-			else {
-				formSendMessage.body = getLang(
-					"getInfoCommand",
-					configCommand.name,
-					description,
-					aliasesString,
-					aliasesThisGroup,
-					configCommand.version,
-					roleText,
-					configCommand.countDown || 1,
-					author || "",
-					guideBody.split("\n").join("\n│")
-				);
-				sendWithAttachment = true;
-			}
-
-			if (sendWithAttachment && guide.attachment) {
-				if (typeof guide.attachment == "object" && !Array.isArray(guide.attachment)) {
-					const promises = [];
-					formSendMessage.attachment = [];
-
-					for (const keyPathFile in guide.attachment) {
-						const pathFile = path.normalize(keyPathFile);
-
-						if (!fs.existsSync(pathFile)) {
-							const cutDirPath = path.dirname(pathFile).split(path.sep);
-							for (let i = 0; i < cutDirPath.length; i++) {
-								const pathCheck = `${cutDirPath.slice(0, i + 1).join(path.sep)}${path.sep}`; // create path
-								if (!fs.existsSync(pathCheck))
-									fs.mkdirSync(pathCheck); // create folder
-							}
-							const getFilePromise = axios.get(guide.attachment[keyPathFile], { responseType: 'arraybuffer' })
-								.then(response => {
-									fs.writeFileSync(pathFile, Buffer.from(response.data));
-								});
-
-							promises.push({
-								pathFile,
-								getFilePromise
-							});
-						}
-						else {
-							promises.push({
-								pathFile,
-								getFilePromise: Promise.resolve()
-							});
-						}
-					}
-
-					await Promise.all(promises.map(item => item.getFilePromise));
-					for (const item of promises)
-						formSendMessage.attachment.push(fs.createReadStream(item.pathFile));
-				}
-			}
-
-			return message.reply(formSendMessage);
-		}
-	}
+message.reply(responseMessage);
+},
 };
-
-function checkLangObject(data, langCode) {
-	if (typeof data == "string")
-		return data;
-	if (typeof data == "object" && !Array.isArray(data))
-		return data[langCode] || data.en || undefined;
-	return undefined;
-}
-
-function cropContent(content, max) {
-	if (content.length > max) {
-		content = content.slice(0, max - 3);
-		content = content + "...";
-	}
-	return content;
-}
