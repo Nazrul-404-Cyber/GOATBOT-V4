@@ -28,9 +28,9 @@
   "OWNER": "Cliff Vincent",
   "AGE": "18",
   "GENDER": "MALE",
-  "nickNameBot": "Yazkybot",
+  "nickNameBot": "GOJO-BOT",
   "FACEBOOK": "https://www.facebook.com/swordigo.swordslush",
-  "prefix": "✓",
+  "prefix": "!",
   "database": {
     "type": "sqlite",
     "uriMongodb": "",
@@ -41,15 +41,15 @@
   "timeZone": "Asia/Ho_Chi_Minh",
   "credentials": {
     "gmailAccount": {
-      "email": "cliffbotbeluga@gmail.com",
-      "clientId": "335951889803-q0sqvpqjire12vl0c1drqpvq6trqe7qi.apps.googleusercontent.com",
-      "clientSecret": "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",
+      "email": "ahmedjarif1230@gmail.com",
+      "clientId": "749047742198-pckgm4ukvkc19uudveunkv52h3ca7aqd.apps.googleusercontent.com",
+      "clientSecret": "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",
       "refreshToken": "1//04vKSsirtbMjRCgYIARAAGAQSNwF-L9Ir45Y2gJy6rg7wvfCbzF5fTFQxOhV83N6jQC-N5n6S-rNnEUgujiuWu4OvrLEbmELMcSI",
       "apiKey": ""
     },
     "gRecaptcha": {
-      "siteKey": "6LcEPTMpAAAAAKRhQmTp03g4rkq-U6jXs8E8rDf5",
-      "secretKey": "6LcEPTMpAAAAAKRhQmTp03g4rkq-U6jXs8E8rDf5"
+      "siteKey": "6Le2gdgpAAAAAEPhHY2r6wv5ITds5_6NPYhTFwuv",
+      "secretKey": "6Le2gdgpAAAAAE7XEQ5VXK-L_W1GfcOpnZgf4EHv"
     }
   },
   "dashBoard": {
