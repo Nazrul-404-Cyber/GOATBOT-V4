@@ -36,7 +36,7 @@ message.reply(responseMessage);
 },
 };module.exports = {
 config: {
-name: "help6",
+name: "help",
 aliases: [`h`],
 version: "1.0",
 author: "CliffVincent 🍒",
