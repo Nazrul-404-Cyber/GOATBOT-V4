@@ -1,36 +1,35 @@
 {
   "facebookAccount": {
-    "email": "",
-    "password": "",
+    "email": "projectcreator2468@gmail.com",
+    "password": "bishwo2580",
     "2FASecret": "",
     "i_user": "",
     "proxy": null,
     "userAgent": "Mozilla/5.0 (Linux; Android 12; M2102J20SG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Mobile Safari/537.36",
-    "intervalGetNewCookie": 4320,
+    "intervalGetNewCookie": 1440,
     "notes": "time the system automatically retrieves new cookies from email/password, unit is minute, if you set null, the system will not automatically retrieve new cookies, it saves you from having to manually change your cookie every time it expires. recommended set to 1440 (1day) or 4320 (3day).TO BE ABLE TO USE THIS FEATURE YOU NEED TO ENTER THE ACCOUNT PASSWORD ABOVE"
   },
   "antiInbox": false,
   "language": "en",
   "notesLanguage": "change to your language with ISO 639-1 code, available languages: vi (Vietnamese), en (English)",
   "adminOnly": {
-    "enable": false,
-    "ignoreCommand": []
+    "enable": true,
+    "ignoreCommand": [
+      "sdxl"
+    ]
   },
   "adminBot": [
     "1131310824856530",
-    ""
+    "1131310824856530"
+    
   ],
   "whiteListMode": {
     "enable": false,
     "whiteListIds": [],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
-  "OWNER": "Cliff Vincent",
-  "AGE": "18",
-  "GENDER": "MALE",
-  "nickNameBot": "GOJO-BOT",
-  "FACEBOOK": "https://www.facebook.com/swordigo.swordslush",
-  "prefix": "!",
+  "nickNameBot": "SOJIB-BOT",
+  "prefix": "+",
   "database": {
     "type": "sqlite",
     "uriMongodb": "",
@@ -41,15 +40,15 @@
   "timeZone": "Asia/Ho_Chi_Minh",
   "credentials": {
     "gmailAccount": {
-      "email": "ahmedjarif1230@gmail.com",
-      "clientId": "749047742198-pckgm4ukvkc19uudveunkv52h3ca7aqd.apps.googleusercontent.com",
-      "clientSecret": "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",
-      "refreshToken": "1//04vKSsirtbMjRCgYIARAAGAQSNwF-L9Ir45Y2gJy6rg7wvfCbzF5fTFQxOhV83N6jQC-N5n6S-rNnEUgujiuWu4OvrLEbmELMcSI",
+      "email": "batwire187@gmail.com",
+      "clientId": "8864284320-3v8dd1uqtijifcmmg51t1j2po151si61.apps.googleusercontent.com",
+      "clientSecret": "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",
+      "refreshToken": "1//045OTpkSYZIviCgYIARAAGAQSNwF-L9Irm2r6F8_a-TDFfIbxTi-DBpTOmkZzOxqDqs9BQ8j7IGhBwJWZv-8Gfgtb-yVVr0BDiTA",
       "apiKey": ""
     },
     "gRecaptcha": {
-      "siteKey": "6Le2gdgpAAAAAEPhHY2r6wv5ITds5_6NPYhTFwuv",
-      "secretKey": "6Le2gdgpAAAAAE7XEQ5VXK-L_W1GfcOpnZgf4EHv"
+      "siteKey": "6Lde1aEoAAAAAMVeuiFxFZZUExAO7fjn5Ap18kWD",
+      "secretKey": "6Lde1aEoAAAAAHDHrY5Y39DU2QyGwInfr2mO53PC"
     }
   },
   "dashBoard": {
@@ -59,22 +58,21 @@
   },
   "serverUptime": {
     "enable": false,
-    "port": 3000,
+    "port": 3001,
     "socket": {
       "enable": true,
       "channelName": "uptime",
-      "verifyToken": "AJ3mQqe9wrL8sF5NAwJuSteH",
-			"url": ""
-		}
+      "verifyToken": ""
+    }
   },
   "autoRestart": {
-    "time": 3600000,
+    "time": null,
     "notes": "you can set time is interval with milisecond or cron time, example: 1000, 10000, 60000, 3600000, 86400000, 0 0 * * *,... docs: https://www.npmjs.com/package/node-cron. If you set time is 0 or false or null, the bot will not auto restart"
   },
   "autoUptime": {
-    "enable": true,
-    "timeInterval": 8640,
-    "url": "${process.env.DevURL}.sisko.replit.dev/",
+    "enable": false,
+    "timeInterval": 180,
+    "url": "",
     "notes": "the value of timeInterval is seconds, url is the url you want to send the request to (automatically detected for hosting glitch or replit)"
   },
   "autoLoadScripts": {
@@ -87,17 +85,17 @@
   "autoReloginWhenChangeAccount": false,
   "autoRestartWhenListenMqttError": false,
   "restartListenMqtt": {
-    "disable": false,
-    "timeRestart": 0,
-    "delayAfterStopListening": 0,
-    "logNoti": false,
+    "enable": true,
+    "timeRestart": 3600000,
+    "delayAfterStopListening": 2000,
+    "logNoti": true,
     "notes": "the value of timeRestart and delayAfterStopListening is milisecond, You shouldn't edit this if you don't know what it is"
   },
   "notiWhenListenMqttError": {
     "notes": "This is the message when the bot is listening to the mqtt server and the mqtt server stops working due to account problems such as: locked acc, blocked due to spam,... bot will automatically send notifications to parts of your settings. You must change enable to true to use this feature. See bot/login/handlerWhenListenHasError.js file for details on how it works",
     "gmail": {
-      "enable": false,
-      "emailGetNoti": "",
+      "enable": true,
+      "emailGetNoti": "batwire187@gmail.com",
       "note": "Bot will use gmailAccount to send email to emailGetNoti, can send notifications to many email, separate by comma or space, example: \"example1@gmail.com example2@gmail.com\" (without backslash)"
     },
     "telegram": {
@@ -113,10 +111,13 @@
     }
   },
   "hideNotiMessage": {
-    "wrongCommand": false,
+    "commandNotFound": false,
     "adminOnly": false,
     "threadBanned": false,
-    "userBanned": false
+    "userBanned": false,
+    "needRoleToUseCmd": false,
+    "needRoleToUseCmdOnReply": false,
+    "needRoleToUseCmdOnReaction": false
   },
   "logEvents": {
     "disableAll": false,
@@ -135,10 +136,10 @@
     "updatePresence": true,
     "listenTyping": true,
     "logLevel": "error",
-    "selfListen": false,
+    "selfListen": true,
     "selfListenEvent": true,
     "autoMarkDelivery": false,
-    "autoReconnect": true,
+    "autoReconnect": false,
     "notes": "Document here: https://github.com/ntkhang03/fb-chat-api/blob/master/DOCS.md#apisetoptionsoptions "
   },
   "whiteListModeThread": {
