@@ -25,10 +25,10 @@
   ],
   "whiteListMode": {
     "enable": false,
-    "whiteListIds": [],
+    "whiteListIds": ["7208401842585177" "100082741833069"],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
-  "nickNameBot": "RK-RESAL",
+  "nickNameBot": "GOATBOT-V3",
   "prefix": "/",
   "database": {
     "type": "sqlite",
