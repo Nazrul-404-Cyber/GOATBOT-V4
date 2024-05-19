@@ -25,7 +25,7 @@
   ],
   "whiteListMode": {
     "enable": false,
-    "whiteListIds" [100082741833069],
+    "whiteListIds" ["100082741833069"],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
   "nickNameBot": "GOATBOT-V3",
